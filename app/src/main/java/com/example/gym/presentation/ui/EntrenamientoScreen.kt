@@ -32,9 +32,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.sp
 import com.example.gym.presentation.getExercisesForObjective
 import kotlin.collections.count
@@ -51,6 +51,7 @@ fun EntrenamientoScreen(navController: NavController, objectiveString: String) {
     val progress = if (totalExercises > 0) completedExercises.value.toFloat() / totalExercises else 0f
     val exerciseCompletedStates = remember { List(exercises.size) { mutableStateOf(false) }.toMutableList() }
     val seriesCounters = remember { List(exercises.size) { mutableStateOf(0) } }
+    val setTimestamps = remember { List(exercises.size) { mutableStateListOf<Long>() } }
     val timeSpent = remember { mutableStateOf(0L) }
     val context = LocalContext.current
     val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -61,7 +62,17 @@ fun EntrenamientoScreen(navController: NavController, objectiveString: String) {
             timeSpent.value += 1000L
         }
     }
-    val caloriesBurned = exercises.sumOf { it.sets * 5 } * completedExercises.value / totalExercises
+    fun calcularCalorias(met: Double, minutos: Double, peso: Double = 65.0): Int {
+        return ((met * 3.5 * peso / 200) * minutos).toInt()
+    }
+    val caloriesBurned = exercises.mapIndexed { index, ejercicio ->
+        val timestamps = setTimestamps[index]
+        val duracionesMs = timestamps.zipWithNext { a, b -> b - a }  // calcula las diferencias
+        val totalDuracionMs = duracionesMs.sum()
+        val totalMin = totalDuracionMs / 60000.0
+        calcularCalorias(ejercicio.met, totalMin)
+    }.sum()
+
 
     Scaffold(
         timeText = { TimeText() }
@@ -152,6 +163,8 @@ fun EntrenamientoScreen(navController: NavController, objectiveString: String) {
                                 onClick = {
                                     val newValue = (currentSeries + 1).coerceAtMost(totalSeries)
                                     seriesCounters[index].value = newValue
+                                    setTimestamps[index].add(System.currentTimeMillis())
+
                                     if (newValue == totalSeries) {
                                         exerciseCompletedStates[index].value = true
                                         completedExercises.value = exerciseCompletedStates.count { it.value }

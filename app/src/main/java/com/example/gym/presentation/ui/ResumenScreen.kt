@@ -172,6 +172,7 @@ fun ResumenScreen(navController: NavController) {
                         scope.launch {
                             withContext(Dispatchers.IO) {
                                 val db = DatabaseProvider.getDatabase(context)
+                                Log.d("ResumenScreen", "Inserting workout locally: ${workout.value}")
                                 db.workoutDao().insert(workout.value)
                                 if (isSyncEnabled) {
                                     val dataMapRequest = PutDataMapRequest.create("/workout_data")
@@ -182,8 +183,10 @@ fun ResumenScreen(navController: NavController) {
                                         putLong("timeSpent", workout.value.timeSpent)
                                         putLong("createdAt", workout.value.createdAt)
                                     }
+                                    Log.d("ResumenScreen", "Sending workout to mobile: ${workout.value}")
                                     try {
                                         dataClient.putDataItem(dataMapRequest.asPutDataRequest()).await()
+                                        Log.d("ResumenScreen", "Workout sent successfully")
                                     } catch (e: Exception) {
                                         Log.e("ResumenScreen", "Sync failed", e)
                                     }
