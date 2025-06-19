@@ -36,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.wear.compose.material.Icon
 import android.content.Context
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.runtime.*
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.PutDataMapRequest
@@ -90,10 +91,10 @@ fun ResumenScreen(navController: NavController) {
         ScalingLazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp),
+                .padding(horizontal = 5.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            item { Spacer(modifier = Modifier.height(20.dp)) }
+            item { Spacer(modifier = Modifier.height(2.dp)) }
             item {
                 Icon(
                     imageVector = Icons.Filled.CheckCircle,
@@ -165,14 +166,13 @@ fun ResumenScreen(navController: NavController) {
                     )
                 }
             }
-            item { Spacer(modifier = Modifier.height(20.dp)) }
+            item { Spacer(modifier = Modifier.height(2.dp)) }
             item {
                 Button(
                     onClick = {
                         scope.launch {
                             withContext(Dispatchers.IO) {
                                 val db = DatabaseProvider.getDatabase(context)
-                                Log.d("ResumenScreen", "Inserting workout locally: ${workout.value}")
                                 db.workoutDao().insert(workout.value)
                                 if (isSyncEnabled) {
                                     val dataMapRequest = PutDataMapRequest.create("/workout_data")
@@ -183,10 +183,8 @@ fun ResumenScreen(navController: NavController) {
                                         putLong("timeSpent", workout.value.timeSpent)
                                         putLong("createdAt", workout.value.createdAt)
                                     }
-                                    Log.d("ResumenScreen", "Sending workout to mobile: ${workout.value}")
                                     try {
                                         dataClient.putDataItem(dataMapRequest.asPutDataRequest()).await()
-                                        Log.d("ResumenScreen", "Workout sent successfully")
                                     } catch (e: Exception) {
                                         Log.e("ResumenScreen", "Sync failed", e)
                                     }
@@ -199,8 +197,8 @@ fun ResumenScreen(navController: NavController) {
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 16.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
+                        .height(30.dp),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
                 ) {
                     Text("Volver al Inicio", color = MaterialTheme.colors.onPrimary)
                 }

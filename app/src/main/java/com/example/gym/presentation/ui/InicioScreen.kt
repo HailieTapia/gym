@@ -200,7 +200,7 @@ fun InicioScreen(navController: NavController) {
                                 .size(20.dp),
                             tint = MaterialTheme.colors.onSecondary
                         )
-                        Text("Vincular con teléfono", color = MaterialTheme.colors.onSecondary)
+                        Text("Vincular dispositivo", color = MaterialTheme.colors.onSecondary)
                     }
                 }
             }

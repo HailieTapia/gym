@@ -85,7 +85,7 @@ fun EntrenamientoScreen(navController: NavController, objectiveString: String) {
             item {
                 Text(
                     text = "Rutina para ${objective.name}",
-                    style = MaterialTheme.typography.title3.copy(fontSize = 14.sp),
+                    style = MaterialTheme.typography.title3.copy(fontSize = 16.sp),
                     color = MaterialTheme.colors.primary,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                     modifier = Modifier

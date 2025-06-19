@@ -30,9 +30,10 @@ fun getExercisesForObjective(objective: Objective): List<Exercise> {
             Exercise("Overhead Press", 3, 8, met = 5.5)
         )
         Objective.Resistencia -> listOf(
-            Exercise("High Knees", 3, 40, met = 7.5),
-            Exercise("Mountain Climbers", 3, 20, met = 8.0),
-            Exercise("Jump Rope", 3, 50, met = 10.0)
+            Exercise("Sentadilla", 3, 40, met = 7.5),
+            Exercise("Saltos", 3, 20, met = 8.0),
+            Exercise("Desplantes" +
+                    "", 3, 50, met = 10.0)
         )
     }
 }
